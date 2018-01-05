@@ -3,11 +3,16 @@
 
 import React from 'react';
 
-export default ({ input, label }) => {
+// meta property contains the error (from validation) that
+// is passed by reduxForm
+export default ({ input, label, meta: { error, touched } }) => {
   return (
     <div>
       <label htmlFor={input.name}>{label}</label>
-      <input {...input} />
+      <input {...input} style={{ marginBottom: '5px' }} />
+      <div className="red-text" style={{ marginBottom: '20px' }}>
+        {touched && error}
+      </div>
     </div>
   );
 };
