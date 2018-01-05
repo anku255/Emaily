@@ -8,7 +8,7 @@ const FIELDS = [
   { label: 'Survey Title', name: 'title' },
   { label: 'Survey Line', name: 'subject' },
   { label: 'Email Body', name: 'body' },
-  { label: 'Recipient List', name: 'email' }
+  { label: 'Recipient List', name: 'emails' }
 ];
 
 class SurveyForm extends Component {
