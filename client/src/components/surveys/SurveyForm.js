@@ -29,6 +29,8 @@ class SurveyForm extends Component {
   render() {
     return (
       <div>
+        {/* handleSubmit is provided by reduxForm. handleSubmit is called with
+          all the values from the form */}
         <form onSubmit={this.props.handleSubmit(this.props.onSurveySubmit)}>
           {this.renderFields()}
           <Link to="/surveys" className="red btn-flat white-text">
