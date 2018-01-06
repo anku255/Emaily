@@ -63,5 +63,5 @@ function validate(values) {
 export default reduxForm({
   validate, // This function runs every time form changes
   form: 'surveyForm',
-  destroyOnUmount: false // Persistent form values
+  destroyOnUnmount: false // Persistent form values
 })(SurveyForm);
