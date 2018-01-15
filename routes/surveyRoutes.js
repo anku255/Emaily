@@ -41,15 +41,34 @@ module.exports = app => {
   app.post('/api/surveys/webhooks', (req, res) => {
     const p = new Path('/api/surveys/:surveyId/:choice');
 
-    const events = _.chain(req.body)
+    // lodash chain helper
+    _.chain(req.body)
       .map(({ email, url }) => {
         const match = p.test(new URL(url).pathname);
         if (match) {
           return { email, surveyId: match.surveyId, choice: match.choice };
         }
       })
+      // remove any flasy values
       .compact()
+      // remove non unique events
       .uniqBy('email', 'surveyId')
+      .each(({ surveyId, email, choice }) => {
+        Survey.updateOne(
+          {
+            _id: surveyId,
+            recipients: {
+              $elemMatch: { email: email, responded: false }
+            }
+          },
+          {
+            // increase choice by 1
+            $inc: { [choice]: 1 },
+            // set responded property to true
+            $set: { 'recipients.$.responded': true }
+          }
+        ).exec();
+      })
       .value();
     res.send({});
   });
