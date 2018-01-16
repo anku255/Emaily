@@ -79,4 +79,21 @@ module.exports = app => {
       .value();
     res.send({});
   });
+
+  // route to delete a survey
+  app.delete('/api/surveys/:surveyId', requireLogin, async (req, res) => {
+    // check if the logged in user is the owner of the survey
+    const survey = await Survey.findById(req.params.surveyId).select({
+      recipients: false
+    });
+    if (String(survey._user) !== req.user.id) {
+      res.status(403).send(`You don't have permission to delete this survey.`);
+    }
+
+    await Survey.findByIdAndRemove(req.params.surveyId);
+    const surveys = await Survey.find({ _user: req.user.id }).select({
+      recipients: false
+    });
+    res.send(surveys);
+  });
 };
