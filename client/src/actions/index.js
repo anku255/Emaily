@@ -1,5 +1,10 @@
 import axios from 'axios';
-import { FETCH_USER, FETCH_SURVEYS, DELETE_SURVEY } from './types';
+import {
+  FETCH_USER,
+  FETCH_SURVEYS,
+  DELETE_SURVEY,
+  CHANGE_LOADER
+} from './types';
 
 // using redux-thunk middleware to dispatch the action
 // only after request is complete
@@ -33,4 +38,9 @@ export const fetchSurveys = () => async dispatch => {
 export const deleteSurvey = surveyId => async dispatch => {
   const res = await axios.delete(`/api/surveys/${surveyId}`);
   dispatch({ type: DELETE_SURVEY, payload: res.data });
+  dispatch({ type: CHANGE_LOADER, isLoading: null });
+};
+
+export const changeLoader = value => dispatch => {
+  dispatch({ type: CHANGE_LOADER, isLoading: value });
 };

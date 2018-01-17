@@ -1,10 +1,43 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchSurveys, deleteSurvey } from '../../actions';
+import { fetchSurveys, deleteSurvey, changeLoader } from '../../actions';
 
 class SurveyList extends Component {
   componentDidMount() {
     this.props.fetchSurveys();
+  }
+
+  renderDeleteBtn(surveyId) {
+    if (this.props.isLoading === surveyId) {
+      // if it's loading then return loader
+      return (
+        <div className="preloader-wrapper small active right">
+          <div className="spinner-layer spinner-green-only">
+            <div className="circle-clipper left">
+              <div className="circle" />
+            </div>
+            <div className="gap-patch">
+              <div className="circle" />
+            </div>
+            <div className="circle-clipper right">
+              <div className="circle" />
+            </div>
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <a
+          className="right"
+          onClick={() => {
+            this.props.deleteSurvey(surveyId);
+            this.props.changeLoader(surveyId);
+          }}
+        >
+          <i className="material-icons">delete</i>
+        </a>
+      );
+    }
   }
 
   renderSurveys() {
@@ -21,12 +54,7 @@ class SurveyList extends Component {
           <div className="card-action">
             <a>Yes: {survey.yes}</a>
             <a>No: {survey.no}</a>
-            <a
-              className="right"
-              onClick={() => this.props.deleteSurvey(survey._id)}
-            >
-              <i class="material-icons">delete</i>
-            </a>
+            {this.renderDeleteBtn(survey._id)}
           </div>
         </div>
       );
@@ -39,9 +67,11 @@ class SurveyList extends Component {
 }
 
 function mapStateToProps(state) {
-  return { surveys: state.surveys };
+  return { surveys: state.surveys, isLoading: state.loading.isLoading };
 }
 
-export default connect(mapStateToProps, { fetchSurveys, deleteSurvey })(
-  SurveyList
-);
+export default connect(mapStateToProps, {
+  fetchSurveys,
+  deleteSurvey,
+  changeLoader
+})(SurveyList);
